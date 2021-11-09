@@ -8,8 +8,13 @@
 # The following references were used:
 # https://www.youtube.com/watch?v=3QiPPX-KeSc
 # https://www.youtube.com/watch?v=Lbfe3-v7yE0&t=67s
+# https://www.youtube.com/watch?v=stIxEKR7o-c&t=33s&ab_channel=JohnWatsonRooney
 
 import socket
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+import os
 
 HEADER = 64
 PORT = 5050
@@ -26,6 +31,9 @@ running = True
 url = '"URL"'
 keyword = '"keyword"'
 
+example_JSON = '{"URL": "https://pokemon.gameinfo.io/en/pokemon/1-bulbasaur"}'
+example_JSON2 = '{"URL": "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"}'
+
 example_list = [
     "https://secure.img1-fg.wfcdn.com/im/77981853/resize.jpg",
     "https://cdn.vox-cdn.com/thumbor/eFEHo8eygHajtwShwT9e.jpeg",
@@ -39,6 +47,18 @@ def LISTtoJSON(list):
     str_list = str_list + "]"
     return '{"URL": ' + str_list + '}'
 
+# Formats a JSON string to just the URL
+def JSONtoURL(json):
+    size = len(json)
+    url = json[9:size-2]
+    return url
+
+# Formats a JSON string to just the keyword
+def JSONtoKEY(json):
+    size = len(json)
+    key = json[13:size-2]
+    return key
+
 # This function formats a message to send to client,
 # letting it know how long of a message to expect first
 def send(msg, conn):
@@ -49,6 +69,31 @@ def send(msg, conn):
     send_length += b' ' * (HEADER - len(send_length))
     conn.send(send_length)
     conn.send(message)
+
+def scrape_site(url):
+
+    parsed_url = urlparse(url)
+    base_url = parsed_url.scheme + "://" + parsed_url.netloc
+
+    data = "data"
+
+    image_list = []
+
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    images = soup.find_all('img')
+
+    for image in images:
+        first_four = image['src'][0:4]          # This is used for removing erroneous results
+        if first_four != data:
+            # print(base_url + image['src'])
+            # print(image['src'])
+            image_list.append(image['src'])
+
+    return image_list
+
+# print(LISTtoJSON(scrape_site(JSONtoURL(example_JSON2))))
 
 # Client connects, and a message confirms
 def handle_client(conn, addr):
@@ -73,7 +118,7 @@ def handle_client(conn, addr):
             # If this is looking for an image from a website URL...
             if url in msg:
                 print("Grabbing images from URL...")
-                sendmsg = LISTtoJSON(example_list)
+                sendmsg = LISTtoJSON(scrape_site(JSONtoURL(msg)))
                 send(sendmsg, conn)
                 print("Sending list back:")
                 print(f"{sendmsg}")

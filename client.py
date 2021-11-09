@@ -21,7 +21,7 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 connected = False
 
-test_URL = "https://bulbapedia.bulbagarden.net/wiki/Red%27s_Pikachu_(game)"
+test_URL = "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"
 test_keyword = "pikachu"
 num_images = 3
 
@@ -53,7 +53,8 @@ def send(msg):
 # While connected to server...
 while connected:
     # Send a stringified JSON
-    msg = URLtoJSON(test_URL)
+    # msg = KEYtoJSON(test_keyword)       # Test a keyword
+    msg = URLtoJSON(test_URL)         # Test a URL
     send(msg)
 
     print(f"Sent message to server: {msg}")
