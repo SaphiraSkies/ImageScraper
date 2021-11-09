@@ -21,13 +21,16 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 connected = False
 
+# Variables used for testing
 test_URL = "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"
-test_keyword = "pikachu"
-num_images = 3
+# test_keyword = "pikachu"
+# num_images = 5
 
+# Turns a URL into JSON format
 def URLtoJSON(str):
     return '{"URL": "' + str + '"}'
 
+# Turns a keyword into JSON format
 def KEYtoJSON(str):
     return '{"keyword": "' + str + '"}'
 
@@ -52,8 +55,7 @@ def send(msg):
 
 # While connected to server...
 while connected:
-    # Send a stringified JSON
-    # msg = KEYtoJSON(test_keyword)       # Test a keyword
+    # Send a stringified JSON:
     msg = URLtoJSON(test_URL)         # Test a URL
     send(msg)
 

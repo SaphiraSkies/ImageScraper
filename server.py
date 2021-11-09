@@ -13,8 +13,6 @@
 import socket
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
-import os
 
 HEADER = 64
 PORT = 5050
@@ -30,15 +28,16 @@ running = True
 
 url = '"URL"'
 keyword = '"keyword"'
+# num_results = 5
 
-example_JSON = '{"URL": "https://pokemon.gameinfo.io/en/pokemon/1-bulbasaur"}'
-example_JSON2 = '{"URL": "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"}'
+# example_JSON = '{"URL": "https://pokemon.gameinfo.io/en/pokemon/1-bulbasaur"}'
+# example_JSON2 = '{"URL": "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"}'
 
-example_list = [
-    "https://secure.img1-fg.wfcdn.com/im/77981853/resize.jpg",
-    "https://cdn.vox-cdn.com/thumbor/eFEHo8eygHajtwShwT9e.jpeg",
-    "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/09/Pokemon-GO-Pikachu.jpg"
-]
+# example_list = [
+#     "https://secure.img1-fg.wfcdn.com/im/77981853/resize.jpg",
+#     "https://cdn.vox-cdn.com/thumbor/eFEHo8eygHajtwShwT9e.jpeg",
+#     "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/09/Pokemon-GO-Pikachu.jpg"
+# ]
 
 # Formats a list as a JSON string
 def LISTtoJSON(list):
@@ -70,20 +69,24 @@ def send(msg, conn):
     conn.send(send_length)
     conn.send(message)
 
+# This function takes a given URL and scrapes all images under img tags.
+# It returns a list of the image URLs.
 def scrape_site(url):
 
-    parsed_url = urlparse(url)
-    base_url = parsed_url.scheme + "://" + parsed_url.netloc
+    # parsed_url = urlparse(url)
+    # base_url = parsed_url.scheme + "://" + parsed_url.netloc
 
     data = "data"
 
+    # This stores the list of image URLS
     image_list = []
 
+    # Get all images
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
-
     images = soup.find_all('img')
 
+    # Add each image to the list
     for image in images:
         first_four = image['src'][0:4]          # This is used for removing erroneous results
         if first_four != data:
@@ -93,7 +96,12 @@ def scrape_site(url):
 
     return image_list
 
-# print(LISTtoJSON(scrape_site(JSONtoURL(example_JSON2))))
+# This function searches Google for images under the given keyword.
+# It returns the top 5 results.
+# !! This is a work in progress !!
+def search_images(key):
+    return
+
 
 # Client connects, and a message confirms
 def handle_client(conn, addr):
@@ -112,6 +120,13 @@ def handle_client(conn, addr):
             # Receive message of that expected length
             msg = conn.recv(msg_length).decode(FORMAT)
 
+            # Disconnect if this is a "quit" message
+            if msg == DISCONNECT_MESSAGE:
+                print("Client disconnected.")
+                conn.close()
+                connected = False
+                return
+
             # Print received message
             print(f"Received from client: {msg}")
 
@@ -123,22 +138,18 @@ def handle_client(conn, addr):
                 print("Sending list back:")
                 print(f"{sendmsg}")
                 pass
+            else:
+                print("Error reading URL from JSON.")
 
             # If this is looking for an image from a keyword in Google images...
-            if keyword in msg:
-                print("Grabbing top 3 images from Google...")
-                sendmsg = LISTtoJSON(example_list)
-                send(sendmsg, conn)
-                print("Sending list back:")
-                print(f"{sendmsg}")
-                pass
-
-            # Disconnect if this is a "quit" message
-            if msg == DISCONNECT_MESSAGE:
-                print("Client disconnected.")
-                conn.close()
-                connected = False
-                return
+            # !! Not currently functional !!
+            # if keyword in msg:
+            #     print("Grabbing top 3 images from Google...")
+            #     sendmsg = LISTtoJSON(example_list)
+            #     send(sendmsg, conn)
+            #     print("Sending list back:")
+            #     print(f"{sendmsg}")
+            #     pass
 
     conn.close()
 
