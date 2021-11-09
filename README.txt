@@ -48,7 +48,7 @@ Running on flip:
 If you need to run the service on the flip server and have not done so before,
 you may need to set up the virtual environment first.
 
-1. Copy the file to a folder on the server (example: moonha/CS361/imagescraper)
+1. Copy the python files to a folder on the server (example: moonha/CS361/imagescraper)
 2. Navigate to that folder: cd imagescraper
 3. Create venv for the folder: virtualenv imagescraper
 4. Activate the venv: source imagescraper/bin/activate
