@@ -41,3 +41,19 @@ To run the Image Scraper service:
 To run the test client:
 1. Run:
 	python3 client.py
+
+************************************
+
+Running on flip:
+If you need to run the service on the flip server and have not done so before,
+you may need to set up the virtual environment first.
+
+1. Copy the file to a folder on the server (example: moonha/CS361/imagescraper)
+2. Navigate to that folder: cd imagescraper
+3. Create venv for the folder: virtualenv imagescraper
+4. Activate the venv: source imagescraper/bin/activate
+5. Install dependencies using:
+	pip3 install requests
+	pip3 install beautifulsoup4
+6. You should now be able to run the scraper server: python3 server.py
+7. You can deactivate the venv: deactivate
