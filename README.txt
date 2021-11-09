@@ -1,4 +1,6 @@
 ===== CS 361 Image Scraper Microservice =====
+Hannah Moon
+CS361
 
 Description:
 
