@@ -18,10 +18,10 @@ PYTHON connection works like this:
 4. Client needs to send two messages: first one with the length of the message to send (in bytes), then followed by the actual message.
 5. Server receives two messages: the length (in bytes) of the message, then the message itself.
 	The server expects to receive a stringified JSON in this format:
-	{"URL": "http://www.google.com"}
+	{"URL":"http://www.google.com"}
 6. The server will scrape images from the given URL.
 7. The server then sends back the message length (in bytes) and the message itself. It is a stringified JSON in this format:
-	{"URL": [
+	{"URL":[
 		http://www.website.com/cupcake.jpg,
 		http://www.website.com/soup.jpg,
 		http://www.website.com/tea.jpg,
@@ -35,8 +35,8 @@ JS WEBSOCKETS connection works like this:
 1. Server runs, listening on port 5051.
 2. Client runs, attempts to connect.
 3. Server listens for a message.
-4. Client sends a url in JSON format. (e.g. {"URL": "http://www.example.com")
-5. Server responds with a JSON list of images. (e.g. {"URL": [image1.png, image2.png]})
+4. Client sends a url in JSON format. (e.g. {"URL":"http://www.example.com")
+5. Server responds with a JSON list of images. (e.g. {"URL":[image1.png, image2.png]})
 6. The client will need to sort and handle the JSON results.
 
 Note: It is important to send both the message length and the message itself in order to ensure all data is received accurately.
@@ -76,5 +76,5 @@ you may need to set up the virtual environment first.
 	pip3 install requests
 	pip3 install beautifulsoup4
 	pip3 install websockets
-6. You should now be able to run the scraper server: python3 server.py
+6. You should now be able to run the scraper server.
 7. You can deactivate the venv: deactivate
