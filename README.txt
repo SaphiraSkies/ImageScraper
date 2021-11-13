@@ -4,10 +4,15 @@ CS361
 
 Description:
 
-The image scraper microservice currently runs by connecting to a local host on port 5050.
+The image scraper microservice has two options: One for connecting via python sockets, a second for connecting via websockets.
 
-It works like this:
-1. Server runs, listening for socket connections.
+The PYTHON socket connects to a local host on port 5050.
+The JS socket connects to a local host on port 5051.
+
+************************************
+
+PYTHON connection works like this:
+1. Server runs, listening on port 5050.
 2. Client runs, attempts to connect.
 3. Server accepts connection and waits for a message from client.
 4. Client needs to send two messages: first one with the length of the message to send (in bytes), then followed by the actual message.
@@ -24,6 +29,16 @@ It works like this:
 8. The client receives the message length, then the message.
 9. The client will need to sort and handle the JSON results.
 
+************************************
+
+JS WEBSOCKETS connection works like this:
+1. Server runs, listening on port 5051.
+2. Client runs, attempts to connect.
+3. Server listens for a message.
+4. Client sends a url in JSON format. (e.g. {"URL": "http://www.example.com")
+5. Server responds with a JSON list of images. (e.g. {"URL": [image1.png, image2.png]})
+6. The client will need to sort and handle the JSON results.
+
 Note: It is important to send both the message length and the message itself in order to ensure all data is received accurately.
 
 ************************************
@@ -33,14 +48,19 @@ To run the Image Scraper service:
 2. Install dependencies:
 	pip install requests
 	pip install beautifulsoup4
-3. Run:
+	pip install websockets
+3a. To run the server for PYTHON sockets:
 	python3 server.py
+3b. To run the server for JS websockets:
+	python3 ws_server.py
 
 ************************************
 
 To run the test client:
-1. Run:
+1a. Run for PYTHON sockets:
 	python3 client.py
+1b. Run for JS websockets:
+	python3 ws_client.py
 
 ************************************
 
@@ -55,5 +75,6 @@ you may need to set up the virtual environment first.
 5. Install dependencies using:
 	pip3 install requests
 	pip3 install beautifulsoup4
+	pip3 install websockets
 6. You should now be able to run the scraper server: python3 server.py
 7. You can deactivate the venv: deactivate

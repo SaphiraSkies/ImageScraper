@@ -11,8 +11,7 @@
 # https://www.youtube.com/watch?v=stIxEKR7o-c&t=33s&ab_channel=JohnWatsonRooney
 
 import socket
-import requests
-from bs4 import BeautifulSoup
+import scraper
 
 HEADER = 64
 PORT = 5050
@@ -27,36 +26,6 @@ server.bind(ADDR)
 running = True
 
 url = '"URL"'
-keyword = '"keyword"'
-# num_results = 5
-
-# example_JSON = '{"URL": "https://pokemon.gameinfo.io/en/pokemon/1-bulbasaur"}'
-# example_JSON2 = '{"URL": "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"}'
-
-# example_list = [
-#     "https://secure.img1-fg.wfcdn.com/im/77981853/resize.jpg",
-#     "https://cdn.vox-cdn.com/thumbor/eFEHo8eygHajtwShwT9e.jpeg",
-#     "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/09/Pokemon-GO-Pikachu.jpg"
-# ]
-
-# Formats a list as a JSON string
-def LISTtoJSON(list):
-    str_list = "["
-    str_list = str_list + ', '.join(list)
-    str_list = str_list + "]"
-    return '{"URL": ' + str_list + '}'
-
-# Formats a JSON string to just the URL
-def JSONtoURL(json):
-    size = len(json)
-    url = json[9:size-2]
-    return url
-
-# Formats a JSON string to just the keyword
-def JSONtoKEY(json):
-    size = len(json)
-    key = json[13:size-2]
-    return key
 
 # This function formats a message to send to client,
 # letting it know how long of a message to expect first
@@ -68,40 +37,6 @@ def send(msg, conn):
     send_length += b' ' * (HEADER - len(send_length))
     conn.send(send_length)
     conn.send(message)
-
-# This function takes a given URL and scrapes all images under img tags.
-# It returns a list of the image URLs.
-def scrape_site(url):
-
-    # parsed_url = urlparse(url)
-    # base_url = parsed_url.scheme + "://" + parsed_url.netloc
-
-    data = "data"
-
-    # This stores the list of image URLS
-    image_list = []
-
-    # Get all images
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    images = soup.find_all('img')
-
-    # Add each image to the list
-    for image in images:
-        first_four = image['src'][0:4]          # This is used for removing erroneous results
-        if first_four != data:
-            # print(base_url + image['src'])
-            # print(image['src'])
-            image_list.append(image['src'])
-
-    return image_list
-
-# This function searches Google for images under the given keyword.
-# It returns the top 5 results.
-# !! This is a work in progress !!
-def search_images(key):
-    return
-
 
 # Client connects, and a message confirms
 def handle_client(conn, addr):
@@ -133,29 +68,18 @@ def handle_client(conn, addr):
             # If this is looking for an image from a website URL...
             if url in msg:
                 print("Grabbing images from URL...")
-                sendmsg = LISTtoJSON(scrape_site(JSONtoURL(msg)))
+                sendmsg = scraper.LISTtoJSON(scraper.scrape_site(scraper.JSONtoURL(msg)))
                 send(sendmsg, conn)
                 print("Sending list back:")
                 print(f"{sendmsg}")
-                pass
             else:
                 print("Error reading URL from JSON.")
-
-            # If this is looking for an image from a keyword in Google images...
-            # !! Not currently functional !!
-            # if keyword in msg:
-            #     print("Grabbing top 3 images from Google...")
-            #     sendmsg = LISTtoJSON(example_list)
-            #     send(sendmsg, conn)
-            #     print("Sending list back:")
-            #     print(f"{sendmsg}")
-            #     pass
 
     conn.close()
 
 # Starts server listening for connections
 server.listen()
-print(f"Server is listening on {SERVER}, port {PORT}")
+print(f"Python server is listening on {SERVER}, port {PORT}")
 
 # Waits for connection
 while running:
