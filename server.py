@@ -1,8 +1,8 @@
 ###################################################################################
-# Hannah Moon - Image Scraper Microservice
+# Hannah Moon - Image Scraper Microservice - Python Server
 # 11/8/2021
-# This service runs a server which will take a JSON input for a URL or keyword
-# and return a JSON list of image URLs for download
+# This service runs a server which will take a JSON input for a URL
+# and return a JSON list of image URLs
 ###################################################################################
 
 # The following references were used:
@@ -20,9 +20,9 @@ ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "/q"
 
+# Connect socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
-
 running = True
 
 url = '"URL"'
@@ -67,7 +67,6 @@ def handle_client(conn, addr):
 
             # If this is looking for an image from a website URL...
             if url in msg:
-                print("Grabbing images from URL...")
                 sendmsg = scraper.LISTtoJSON(scraper.scrape_site(scraper.JSONtoURL(msg)))
                 send(sendmsg, conn)
                 print("Sending list back:")

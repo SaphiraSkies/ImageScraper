@@ -1,7 +1,7 @@
 ###################################################################################
-# Hannah Moon - Image requesting client
+# Hannah Moon - Image requesting client - Python Client
 # 11/8/2021
-# This is a test client for the image scraper microservice.
+# This is a test client for the Python image scraper microservice.
 ###################################################################################
 
 # The following references were used:
@@ -23,16 +23,11 @@ connected = False
 
 # Variables used for testing
 test_URL = "https://www.allrecipes.com/search/results/?search=chocolate+pancakes"
-# test_keyword = "pikachu"
-# num_images = 5
+test_URL2 = "https://en.wikipedia.org/wiki/Rat"
 
 # Turns a URL into JSON format
 def URLtoJSON(str):
-    return '{"URL": "' + str + '"}'
-
-# Turns a keyword into JSON format
-def KEYtoJSON(str):
-    return '{"keyword": "' + str + '"}'
+    return '{"URL":"' + str + '"}'
 
 # Attempt to connect to server
 try:
@@ -76,5 +71,5 @@ while connected:
 
         # Tell server to disconnect
         print("Client disconnecting from server.")
-        send("/q")
+        send(DISCONNECT_MESSAGE)
         connected = False

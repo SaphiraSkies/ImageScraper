@@ -1,3 +1,9 @@
+###################################################################################
+# Hannah Moon - Image Scraper Microservice - Scraper Function
+# 11/11/2021
+# This program contains functions for scraping image URLs from a static website.
+###################################################################################
+
 from bs4 import BeautifulSoup
 import requests
 
@@ -17,10 +23,7 @@ def JSONtoURL(json):
 # This function takes a given URL and scrapes all images under img tags.
 # It returns a list of the image URLs.
 def scrape_site(url):
-
-    # parsed_url = urlparse(url)
-    # base_url = parsed_url.scheme + "://" + parsed_url.netloc
-
+    # This variable is used to help filter results
     data = "data"
 
     # This stores the list of image URLS
@@ -33,10 +36,8 @@ def scrape_site(url):
 
     # Add each image to the list
     for image in images:
-        first_four = image['src'][0:4]          # This is used for removing erroneous results
+        first_four = image['src'][0:4]          # Remove some erroneous results
         if first_four != data:
-            # print(base_url + image['src'])
-            # print(image['src'])
             image_list.append(image['src'])
 
     return image_list
